@@ -57,9 +57,9 @@ var mouseY = 0;
 ctx.save();
 
 function resizeCanvas() {
-	t.update(canvas);
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
+	t.update(canvas);
 	draw();
 }
 window.addEventListener('resize', resizeCanvas, false);
@@ -84,7 +84,6 @@ function draw() {
 			ctx.fillRect(x, y, 9.8, 9.8);
 		}
 	}
-
 }
 
 function mouseDetector(event) {
