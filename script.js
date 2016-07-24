@@ -6,30 +6,31 @@ var ctx = canvas.getContext('2d');
 //
 
 // center x, center y, world width, fit/fill screen and world
-function Transform(cx, cy, size, fit) {
+function Transform(cx, cy, sizex, sizey, fit) {
 	this.cx = cx;
 	this.cy = cy;
-	this.radius = size / 2;
+	this.sizex = sizex;
+	this.sizey = sizey;
 	this.fit = fit;
 }
-Transform.prototype.update = function(canvas) {
+Transform.prototype.update = function(canvasWidth, canvasHeight) {
 	if (!this.vals) this.vals = {};
 
-	var relw = 1;
-	var relh = 1;
-	relh = canvas.height / canvas.width;
-	if (this.fit != relh > 1) {
-		relw = 1 / relh;
-		relh = 1;
+	var relw = this.sizex / canvasWidth;
+	var relh = this.sizey / canvasHeight;
+	if (this.fit == relh < relw) {
+		relh = relw;
+	} else {
+		relw = relh;
 	}
 
-	this.vals.minx = this.cx - this.radius * relw;
-	this.vals.maxx = this.cx + this.radius * relw;
-	this.vals.miny = this.cy - this.radius * relh;
-	this.vals.maxy = this.cy + this.radius * relh;
+	this.vals.minx = this.cx - canvasWidth / 2 * relw;
+	this.vals.maxx = this.cx + canvasWidth / 2 * relw;
+	this.vals.miny = this.cy - canvasHeight / 2 * relh;
+	this.vals.maxy = this.cy + canvasHeight / 2 * relh;
 
-	this.vals.scalex = canvas.width / (this.vals.maxx - this.vals.minx);
-	this.vals.scaley = canvas.height / (this.vals.maxy - this.vals.miny);
+	this.vals.scalex = canvasWidth / (this.vals.maxx - this.vals.minx);
+	this.vals.scaley = canvasHeight / (this.vals.maxy - this.vals.miny);
 }
 Transform.prototype.applyToCanvas = function(ctx) {
 	ctx.scale(this.vals.scalex, this.vals.scaley);
@@ -50,7 +51,7 @@ Transform.prototype.fromScreen = function(sx, sy) {
 //End
 //
 
-var t = new Transform(50, 50, 110, true);
+var t = new Transform(100, 50, 210, 110, true);
 var mouseX = 0;
 var mouseY = 0;
 
@@ -59,7 +60,7 @@ ctx.save();
 function resizeCanvas() {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-	t.update(canvas);
+	t.update(canvas.width, canvas.height);
 	draw();
 }
 window.addEventListener('resize', resizeCanvas, false);
@@ -76,7 +77,7 @@ function clear() {
 
 function draw() {
 	clear();
-	for (var x = 0; x < 100; x += 10) {
+	for (var x = 0; x < 200; x += 10) {
 		for (var y = 0; y < 100; y += 10) {
 			
 			if ((Math.floor(mouseX / 10) * 10) == x && y == (Math.floor(mouseY / 10) * 10)) ctx.fillStyle = "#08476D";
