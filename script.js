@@ -75,17 +75,27 @@ function clear() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function randColor(x, y, t) {
+function randColor(X, Y, t) {
 	var m = 5664;
-	var v = ((x * 545425) ^ (y * 85675)) % m;
+	var v = ((X * 545425) ^ (Y * 85675)) % m;
 	v /= m;
-	return .5 + .5 * Math.sin(v * Math.PI * 2 + t);
+	return .5 + .5 * Math.cos(v * Math.PI * 2 + t);
+	//var dx = (X - mouseX);
+	//var dy = (Y - mouseY);
+	//var r = .5 + .43 * Math.cos(Math.sqrt(dx * dx + dy * dy) / 10);
+	//console.log(x, y, r);
+	//return r;
 }
 
 function scaleColor(s, r0, g0, b0, r1, g1, b1) {
-	var r = Math.floor(s * (r1 - r0) + r0);
-	var g = Math.floor(s * (g1 - g0) + g0);
-	var b = Math.floor(s * (b1 - b0) + b0);
+	if (s < 0) s = 0;
+	if (s > 1) s = 1;
+	//var r = (s * (r1 - r0) + r0) & 0xFF;
+	//var g = (s * (g1 - g0) + g0) & 0xFF;
+	//var b = (s * (b1 - b0) + b0) & 0xFF;
+	var r = (s * 255) & 0xFF;
+	var g = (s * 255) & 0xFF;
+	var b = (s * 255) & 0xFF;
 	return (r << 16) | (g << 8) | b;
 }
 
@@ -93,12 +103,12 @@ var age = 0;
 
 function draw() {
 	clear();
-	for (var x = 0; x < 100; x += 10) {
-		for (var y = 0; y < 100; y += 10) {
+	for (var xloc = 0; xloc < 100; xloc += 10) {
+		for (var yloc = 0; yloc < 100; yloc += 10) {
 			//if ((Math.floor(mouseX / 10) * 10) == x && y == (Math.floor(mouseY / 10) * 10)) ctx.fillStyle = "#08476D";
 			//else ctx.fillStyle = "#2B2B2C";
-			ctx.fillStyle = "#" + scaleColor(randColor(x, y, age * .2), 0x2B, 0x2B, 0x2C, 0x08, 0x47, 0x6D).toString(16);
-			ctx.fillRect(x, y, 9.8, 9.8);
+			ctx.fillStyle = "#" + scaleColor(randColor(xloc, yloc, age * .1), 0x2B, 0x2B, 0x2C, 0x08, 0x47, 0x6D).toString(16);
+			ctx.fillRect(xloc, yloc, 10.1, 10.1);
 		}
 	}
 }
